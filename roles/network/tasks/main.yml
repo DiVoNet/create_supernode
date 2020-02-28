@@ -1,0 +1,218 @@
+---
+# tasks file for network
+
+- name: Update repositories on hosts
+  apt:
+    update_cache: yes
+
+
+- name: install packages 
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - iproute2
+    - uml-utilities
+
+- name: extend /etc/iproute2/rt_tables
+  lineinfile:
+    path: /etc/iproute2/rt_tables
+    state: present
+    regexp: '^90\s'
+    line: '90 freifunk'
+
+- name: configure /etc/network/interfaces.d/bat0
+  template:
+    src: "bat0.j2"
+    dest: /etc/network/interfaces.d/bat0
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Remove "resolvconf" package
+  apt:
+    name: resolvconf
+    state: absent
+
+- name: configure /etc/network/interfaces
+  template:
+    src: "interfaces.j2"
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: 0644
+
+- name: change /etc/resolv.conf
+  copy:
+    src: "etc/resolv.conf"
+    dest: "/etc/resolv.conf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: change net.ipv4.ip_forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.ipv4.ip_no_pmtu_disc
+  sysctl:
+    name: net.ipv4.ip_no_pmtu_disc
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.ipv4.route.flush
+  sysctl:
+    name: net.ipv4.route.flush
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.ipv6.conf.all.forwarding
+  sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+- name: change net.ipv6.conf.all.autoconf
+  sysctl:
+    name: net.ipv6.conf.all.autoconf
+    value: 0
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.ipv6.conf.all.accept_ra
+  sysctl:
+    name: net.ipv6.conf.all.accept_ra
+    value: 0
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.core.rmem_max
+  sysctl:
+    name: net.core.rmem_max
+    value: 83886080
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.core.wmem_max
+  sysctl:
+    name: net.core.wmem_max
+    value: 83886080
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.core.rmem_default
+  sysctl:
+    name: net.core.rmem_default
+    value: 83886080
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change net.core.wmem_default
+  sysctl:
+    name: net.core.wmem_default
+    value: 83886080
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+#- name: change net.netfilter.nf_conntrack_tcp_timeout_established
+#  sysctl:
+#    name: net.netfilter.nf_conntrack_tcp_timeout_established
+#    value: "86400"
+#    sysctl_set: yes
+#    state: present
+#    reload: yes
+
+#- name: change net.netfilter.nf_conntrack_max
+#  sysctl:
+#    name: net.netfilter.nf_conntrack_max
+#    value: 262140
+#    sysctl_set: yes
+#    state: present
+#    reload: yes
+
+- name: change kernel.panic
+  sysctl:
+    name: kernel.panic
+    value: 10
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: change fs.file-max (maximum open files)
+  sysctl:
+    name: fs.file-max
+    value: 149219
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Extend noproc soft limit for normal users
+  pam_limits:
+    domain: "*"
+    limit_type: soft
+    limit_item: nproc
+    value: 65535
+
+- name: Extend noproc hard limit for normal users
+  pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: nproc
+    value: 65535
+
+- name: Extend nofile soft limit for normal users
+  pam_limits:
+    domain: "*"
+    limit_type: soft
+    limit_item: nofile
+    value: 65535
+
+- name: Extend nofile hard limit for normal users
+  pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: nofile
+    value: 65535
+
+- name: Extend nproc soft limit for root
+  pam_limits:
+    domain: root
+    limit_type: soft
+    limit_item: nproc
+    value: 65535
+
+- name: Extend nproc hard limit for root
+  pam_limits:
+    domain: root
+    limit_type: hard
+    limit_item: nproc
+    value: 65535
+
+- name: Extend nofile soft limit for root
+  pam_limits:
+    domain: root
+    limit_type: soft
+    limit_item: nofile
+    value: 65535
+
+- name: Extend nofile hard limit for root
+  pam_limits:
+    domain: root
+    limit_type: hard
+    limit_item: nofile
+    value: 65535

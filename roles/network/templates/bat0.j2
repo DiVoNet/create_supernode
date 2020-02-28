@@ -1,0 +1,11 @@
+allow-hotplug bat0
+auto bat0
+iface bat0 inet static
+  pre-up  modprobe batman-adv && batctl ra BATMAN_IV 
+  post-up ip rule add iif bat0 table freifunk 
+  pre-down ip rule del iif bat0 table freifunk
+  address 10.80.2.{{ servernummer }}/16
+
+iface bat0 inet6 static
+  address fdd3:5d20:b5dd:fe00::{{ servernummer }}
+  netmask 64

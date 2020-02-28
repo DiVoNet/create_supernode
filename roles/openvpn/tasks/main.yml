@@ -1,0 +1,58 @@
+---
+# tasks file for openvpn
+
+- name: Update repositories on hosts
+  apt:
+    update_cache: yes
+
+- name: install openvpn
+  package:
+    name: openvpn
+    state: latest
+
+- name: copy openvpn files
+  copy:
+    src: "etc/openvpn/"
+    dest: "/etc/openvpn"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: configure vpn login file
+  template:
+    src: "vpnac-login.pass.j2"
+    dest: /etc/openvpn/vpnac-login.pass
+    owner: root
+    group: root
+    mode: 0644
+
+
+- name: change executable byte for files
+  file:
+    path: '/etc/openvpn/{{ item }}'
+    owner: root
+    group: root
+    mode: 0744
+  with_items:
+    - 'up.sh'
+    - 'down.sh'
+    - 'check_fastest_server'
+
+- name: Add a cronjob to reconnect to the hopefully fastest VPN server at night
+  cron:
+    name: "reconnect openvpn to (hopefully) connect to the fastest server"
+    minute: 12
+    hour: 3
+    job: "/etc/openvpn/check_fastest_server"
+    state: present
+    user: root
+
+- name: install netselect for check_fastest_server
+  package:
+    name: netselect
+    state: latest
+
+- name: install host for check_fastest_server 
+  package:
+    name: host   
+    state: latest

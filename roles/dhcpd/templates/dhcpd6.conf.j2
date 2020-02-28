@@ -1,0 +1,22 @@
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed.
+ddns-update-style none;
+
+# Option definitions common to all supported networks...
+default-lease-time 43200; # 12 hours
+max-lease-time 43200; # 12 hours
+
+# This DHCP server is the official DHCP server for the local network
+authoritative;
+
+
+ddns-updates off;
+ddns-update-style interim;
+ignore client-updates;
+update-static-leases on;
+
+
+subnet6 fdd3:5d20:b5dd:fe00::/64 {
+        range6 {{ network_ipv6 }} {{ dhcpd_ipv6_max }};
+}
+
