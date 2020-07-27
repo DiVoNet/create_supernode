@@ -18,7 +18,7 @@
         - "::1"
 
     - role: batmancompile
-      batman_adv_number: 2019.5			# Which version should be installed?
+      batman_adv_number: 2020.1			# Which version should be installed?
 
     - role: network
     - role: pdns-recursor
