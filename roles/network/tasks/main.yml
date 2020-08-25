@@ -12,14 +12,13 @@
   with_items:
     - iproute2
     - uml-utilities
-- name: download netutils deb package
+- name: download netselect deb package
   get_url:
-    url="{{ netutils_url }}"
-    dest="/tmp/{{ netutils }}.deb"
+    url="{{ netselect_url }}"
+    dest="/tmp/netselect.deb"
 
-- name: install netutils
-  apt: deb="/tmp/{{ netutils }}.deb"
-  sudo: true
+- name: install netselect
+  apt: deb="/tmp/netselect.deb"
 
 - name: extend /etc/iproute2/rt_tables
   lineinfile:
