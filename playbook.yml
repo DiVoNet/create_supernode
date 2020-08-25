@@ -18,7 +18,7 @@
         - "::1"
 
     - role: batmancompile
-      batman_adv_number: 2020.1
+      batman_adv_number: 2020.2
 
     - role: network
       netselect_url: "http://ftp.de.debian.org/debian/pool/main/n/netselect/netselect_0.3.ds1-28+b1_amd64.deb"
