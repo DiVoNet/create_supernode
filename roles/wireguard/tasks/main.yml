@@ -1,25 +1,25 @@
 ---
 # tasks file for wireguard
 
-
+# todo make difference between ubuntu and debian
 # Add specified repository into sources list using specified filename.
-- name: Add wireguard repository to system
-  apt_repository:
-    repo: deb http://deb.debian.org/debian/ unstable main
-    state: present
-    filename: wireguard
+#- name: Add wireguard repository to system
+#  apt_repository:
+#    repo: deb http://deb.debian.org/debian/ unstable main
+#    state: present
+#    filename: wireguard
+#
+#- name: Add pinning for the repository
+#  copy:
+#    dest: /etc/apt/preferences.d/limit-unstable
+#    content: |
+#      Package: *
+#      Pin: release a=unstable
+#      Pin-Priority: 90
 
-- name: Add pinning for the repository
-  copy:
-    dest: /etc/apt/preferences.d/limit-unstable
-    content: |
-      Package: *
-      Pin: release a=unstable
-      Pin-Priority: 90
-
-- name: Update repositories on hosts
-  apt:
-    update_cache: yes
+#- name: Update repositories on hosts
+#  apt:
+#    update_cache: yes
 
 - name: install wireguard
   package:

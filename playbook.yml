@@ -2,7 +2,7 @@
 
 - hosts: all
   vars:
-    servernummer: "3"				#The number of the supernode
+    servernummer: "3"
   roles:
     - role: geerlingguy.ntp
       ntp_enabled: true
@@ -18,31 +18,32 @@
         - "::1"
 
     - role: batmancompile
-      batman_adv_number: 2020.1			# Which version should be installed?
+      batman_adv_number: 2020.1
 
     - role: network
+      netselect_url: "http://ftp.de.debian.org/debian/pool/main/n/netselect/netselect_0.3.ds1-28+b1_amd64.deb"
     - role: pdns-recursor
     - role: dhcpd
-      network_ipv4: "10.80.116"				#IPv4 and
-      network_ipv6: "fdd3:5d20:b5dd:fe00:3000::"	#IPv6 Range
-      dhcpd_ipv4_max: "10.80.120.254"			#Max IP which should be served via dhcpd
+      network_ipv4: "10.80.116"
+      network_ipv6: "fdd3:5d20:b5dd:fe00:3000::"
+      dhcpd_ipv4_max: "10.80.120.254"
       dhcpd_ipv6_max: "fdd3:5d20:b5dd:fe00:3fff:ffff:ffff:ffff"
       # Which IPV4 Blocks should be ignored?
       dhcpd_ipv4_blockstart1: "10.80.0.0"
       dhcpd_ipv4_blockend1: "10.80.115.255"
       dhcpd_ipv4_blockstart2: "10.80.121.0"
       dhcpd_ipv4_blockend2: "10.80.255.255"
-
+#OK
     - role: wireguard
 #<insert your wireguard privatekey for the node connection>
-      wireguard_privatekey_nodes: <XXX>  
+      wireguard_privatekey_nodes: <XXX> 
 #<insert your wireguard privatekey for the backend between the supernodes>
       wireguard_privatekey_backbone: <XXX>
 #<port 80 or 443. If you use 443, the port must be reachable from the internet to generate a lets encrypt certificate! If you insert port 80, some proxy in front must handle the  https request>
       wireguard_nginx_port: 443
-
+#OK
     - role: openvpn
-      openvpn_clientname: <XXX>					# The name 
-      openvpn_clientpass: <XXX>					# and password for connecting to the exit vpn
+      openvpn_clientname: <XXX>
+      openvpn_clientpass: <XXX>
 
 

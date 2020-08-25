@@ -10,7 +10,9 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - linux-headers-amd64
+    - ifupdown
+#    - linux-headers-amd64
+    - linux-headers-generic 
     - build-essential 
     - cmake 
     - doxygen 
