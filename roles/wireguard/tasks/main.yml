@@ -96,6 +96,7 @@
   with_items:
     - nginx
     - php-fpm
+    - libnginx-mod-http-geoip
 
 - name: configure default nginx file
   template:
