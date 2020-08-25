@@ -1,7 +1,6 @@
 ---
 # tasks file for wireguard
 
-# todo make difference between ubuntu and debian
 # Add specified repository into sources list using specified filename.
 #- name: Add wireguard repository to system
 #  apt_repository:
@@ -125,7 +124,7 @@
   when: "wireguard_nginx_port == '443'"
 
 - name: generate letsencrypt certificate
-  shell: certbot --nginx -n -d ffkwsn0{{ servernummer }}.freifunk-koenigswinter.de --agree-tos --email  kontakt@freifunk-koenigswinter.de --redirect
+  shell: certbot --nginx -n -d ffkwsn0{{ servernumber }}.freifunk-koenigswinter.de --agree-tos --email  kontakt@freifunk-koenigswinter.de --redirect
   when: "wireguard_nginx_port == '443'"
 
 - name: copy wireguard.php to webserverroot

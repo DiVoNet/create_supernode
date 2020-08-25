@@ -2,7 +2,7 @@
 
 - hosts: all
   vars:
-    servernummer: "3"
+    servernumber: "3"
   roles:
     - role: geerlingguy.ntp
       ntp_enabled: true
