@@ -8,6 +8,10 @@ server {
 
     server_name ffkwsn0{{ servernumber }}.freifunk-koenigswinter.de;
 
+    if ($allowed_country = no) {
+        return 444;
+    }
+
     location / {
         # First attempt to serve request as file, then
         # as directory, then fall back to displaying a 404.
@@ -15,14 +19,9 @@ server {
     }
 
     location ~* \.php$ {
-        fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
         include         fastcgi_params;
         fastcgi_param   SCRIPT_FILENAME    $document_root$fastcgi_script_name;
         fastcgi_param   SCRIPT_NAME        $fastcgi_script_name;
     }
-
-    if ($allowed_country = no) {
-        return 444;
-    }
-
 }
