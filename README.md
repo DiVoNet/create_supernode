@@ -1,4 +1,4 @@
-With this ansible scipt you could create a supernode for DiVoNet from scratch.
+With this ansible script you could create a supernode for DiVoNet from scratch.
 You just need to install a simple debian virtual or physical machine and ansible via apt.
 After installation just login with your normal user and clone the whole repo in your home directory.
 
