@@ -1,0 +1,13 @@
+#!/bin/sh
+
+/sbin/brctl addbr br-wg-nodes
+/sbin/ip link set dev br-wg-nodes up
+/usr/local/sbin/batctl if add br-wg-nodes
+/sbin/ip route add 10.80.0.0/16 dev bat0 table freifunk
+
+#Port isolation bridge
+ebtables --append FORWARD --logical-in br-wg-nodes --jump DROP
+
+batctl it 5000
+batctl gw_mode server 300MBit/300MBit
+batctl bl 1                     #Bridge loop detection aktivieren

@@ -2,7 +2,7 @@
 
 - hosts: all
   vars:
-    servernummer: "3"				#The number of the supernode
+    servernumber: "3"				#The number of the supernode
   roles:
     - role: geerlingguy.ntp
       ntp_enabled: true

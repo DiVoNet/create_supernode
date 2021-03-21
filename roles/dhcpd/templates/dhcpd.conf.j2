@@ -1,7 +1,7 @@
 option domain-name "local";
 option domain-search "local";
-option domain-name-servers 10.80.2.{{ servernummer }};
-option ntp-servers 10.80.2.{{ servernummer }};
+option domain-name-servers 10.80.2.{{ servernumber }};
+option ntp-servers 10.80.2.{{ servernumber }};
 
 ignore client-updates;
 update-static-leases on;
@@ -22,6 +22,6 @@ subnet 10.80.0.0 netmask 255.255.0.0 {
   }
   # if using a /24 then the range goes from .10 to .254
   range {{ network_ipv4 }}.1 {{ dhcpd_ipv4_max }};
-        option routers 10.80.2.{{ servernummer }};
+        option routers 10.80.2.{{ servernumber }};
         option interface-mtu 1332;
 }

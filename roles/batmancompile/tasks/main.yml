@@ -28,6 +28,17 @@
     - dkms
     - linux-headers-{{ ansible_kernel }}
 
+- name: Remove existing batman-adv
+  command: "{{ item }}"
+  with_items:
+    - dkms remove batman-adv/{{ batman_adv_number }} --all
+    - rm -rf /usr/src/batman-adv-{{ batman_adv_number }}
+    - rm -f /usr/src/batctl-{{ batman_adv_number }}.tar.gz
+    - rm -f /usr/local/sbin/batctl
+    - rm -rf /usr/src/batctl-{{ batman_adv_number }}/
+    - rm -f /usr/src/batman-adv-{{ batman_adv_number }}.tar.gz
+  ignore_errors: yes
+
 - name: Downloading batman-adv sources
   get_url:
     url: "https://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-{{ batman_adv_number }}.tar.gz"
@@ -65,7 +76,6 @@
     mode: 0644
   when: batman_adv_source_unpack.changed
   register: batman_adv_dkms
-
 
 - name: Installing Batman-adv
   command: "{{ item }} chdir=/usr/src/batman-adv-{{ batman_adv_number }}/"

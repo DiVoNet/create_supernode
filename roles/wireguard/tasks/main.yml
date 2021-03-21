@@ -46,23 +46,23 @@
 
 - name: configure wg0.conf
   template:
-    src: "wg0.conf.j2"
-    dest: /etc/wireguard/wg0.conf
+    src: "wg-nodes.conf.j2"
+    dest: /etc/wireguard/wg-nodes.conf
     owner: root
     group: root
     mode: 0644
 
 - name: configure wg1.conf
   template:
-    src: "wg1.conf.j2"
-    dest: /etc/wireguard/wg1.conf
+    src: "wg-backbone.conf.j2"
+    dest: /etc/wireguard/wg-backbone.conf
     owner: root
     group: root
     mode: 0644
 
 - name: configure backbone on-up script
   template:
-    src: "backbone_on-up.j2"
+    src: "wg-backbone_on-up.j2"
     dest: /etc/wireguard/backbone_on-up
     owner: root
     group: root
@@ -75,18 +75,18 @@
     group: root
     mode: 0744
   with_items:
-    - 'on-up'
-    - 'backbone_on-up'
+    - 'wg-nodes_on-up'
+    - 'wg-backbone_on-up'
 
-- name: enable wg0 and ensure it is not masked
+- name: enable wg-nodes and ensure it is not masked
   systemd:
-    name: wg-quick@wg0
+    name: wg-quick@wg-nodes
     enabled: yes
     masked: no
 
-- name: enable wg1 and ensure it is not masked
+- name: enable wg-backbone and ensure it is not masked
   systemd:
-    name: wg-quick@wg1
+    name: wg-quick@wg-backbone
     enabled: yes
     masked: no
 
@@ -125,7 +125,7 @@
   when: "wireguard_nginx_port == '443'"
 
 - name: generate letsencrypt certificate
-  shell: certbot --nginx -n -d ffkwsn0{{ servernummer }}.freifunk-koenigswinter.de --agree-tos --email  kontakt@freifunk-koenigswinter.de --redirect
+  shell: certbot --nginx -n -d ffkwsn0{{ servernumber }}.freifunk-koenigswinter.de --agree-tos --email  kontakt@freifunk-koenigswinter.de --redirect
   when: "wireguard_nginx_port == '443'"
 
 - name: copy wireguard.php to webserverroot
@@ -144,23 +144,6 @@
     group: root
     mode: 0644
 
-- name: copy checkspeed.sh to /var/www
-  copy:
-    src: "var/www/checkspeed.sh"
-    dest: "/var/www/checkspeed.sh"
-    owner: root
-    group: root
-    mode: 0755
-
-- name: Add a cronjob to check vpn speed
-  cron:
-    name: "check every second hour the actual speed of the vpn connection"
-    hour: "*/2"
-    minute: 10
-    job: "/var/www/checkspeed.sh"
-    state: present
-    user: root
-
 - name: delete index.nginx-debian.html in /var/www
   file: 
     path: /var/www/html/index.nginx-debian.html
@@ -177,15 +160,15 @@
   cron: 
     name: "check for old inactive wireguard session (last handshake older than 1 hour)" 
     minute: 5 
-    job: "wg set wg0 peer  \"$(wg |  awk 'BEGIN {RS=\"\"} /hour/ {print $2}'  | head -n 1)\" remove"
+    job: "wg set wg-nodes peer  \"$(wg |  awk 'BEGIN {RS=\"\"} /hour/ {print $2}'  | head -n 1)\" remove"
     state: present
     user: root
 
 - name: Add a cronjob to remove old key after reboot 
   cron:
-    name: "check for old wireguard session after reboot"
+    name: "check for old wg-nodes session after reboot"
     special_time: reboot 
-    job: "sleep 300 && /root/remove_wg0_keys.sh"
+    job: "sleep 300 && /root/remove_wg-nodes_keys.sh"
     state: present
     user: root
 

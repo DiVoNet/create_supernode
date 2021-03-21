@@ -1,0 +1,31 @@
+# backbone net wg-backbone supernode specific
+[Interface]
+Address = 10.35.0.{{ servernumber }}/24
+ListenPort = 30030
+PrivateKey = {{ wireguard_privatekey_backbone }}
+PostUp = /etc/wireguard/wg-backbone_on-up
+
+[Peer]
+PublicKey = 6Nano2Iu4bm6JofOCQM2VCFdieIrnx5JPRnIxRkhVR8=
+AllowedIPs = 10.35.0.1/32
+Endpoint = sn01.divonet.de:30030
+
+[Peer]
+PublicKey = p0YOQXB4tS2TTt8HWOXBXQBcGE8wTdEp1XMWUUdKAg8=
+AllowedIPs = 10.35.0.2/32
+Endpoint = sn02.divonet.de:30030
+
+[Peer]
+PublicKey = iKK0syqbyw/YaNceVAsWw3lOlMhFy2LfkKqOGHV3yFg=
+AllowedIPs = 10.35.0.3/32
+Endpoint = sn03.divonet.de:30030
+
+[Peer]
+PublicKey = 1OkdunUvW1PFRROOqqAiLaqKWp0U12ocY/icDgkXLiE=
+AllowedIPs = 10.35.0.4/32
+Endpoint = sn04.divonet.de:30030
+
+
+
+
+
