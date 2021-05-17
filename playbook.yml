@@ -40,9 +40,3 @@
       wireguard_privatekey_backbone: <XXX>
 #<port 80 or 443. If you use 443, the port must be reachable from the internet to generate a lets encrypt certificate! If you insert port 80, some proxy in front must handle the  https request>
       wireguard_nginx_port: 443
-
-    - role: openvpn
-      openvpn_clientname: <XXX>					# The name 
-      openvpn_clientpass: <XXX>					# and password for connecting to the exit vpn
-
-
