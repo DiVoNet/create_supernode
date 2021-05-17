@@ -14,7 +14,7 @@ ebtables --append FORWARD --logical-in br-wg-backbone --jump DROP
 #/sbin/brctl addif br-wg-backbone gre-divonet1
 
 #divonet2
-#/sbin/ip link add gre-divonet2 type gretap remote 10.35.0.1 local 10.35.0.{{ servernumber }}
+#/sbin/ip link add gre-divonet2 type gretap remote 10.35.0.2 local 10.35.0.{{ servernumber }}
 #/sbin/ip link set up dev gre-divonet2
 #/sbin/brctl addif br-wg-backbone gre-divonet2
 
@@ -27,3 +27,8 @@ ebtables --append FORWARD --logical-in br-wg-backbone --jump DROP
 #/sbin/ip link add gre-divonet4 type gretap remote 10.35.0.4 local 10.35.0.{{ servernumber }}
 #/sbin/ip link set up dev gre-divonet4
 #/sbin/brctl addif br-wg-backbone gre-divonet4
+
+#divonet5
+#/sbin/ip link add gre-divonet5 type gretap remote 10.35.0.4 local 10.35.0.{{ servernumber }}
+#/sbin/ip link set up dev gre-divonet5
+#/sbin/brctl addif br-wg-backbone gre-divonet5
