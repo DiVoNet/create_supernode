@@ -63,7 +63,7 @@
 - name: configure backbone on-up script
   template:
     src: "wg-backbone_on-up.j2"
-    dest: /etc/wireguard/backbone_on-up
+    dest: /etc/wireguard/wg-backbone_on-up
     owner: root
     group: root
     mode: 0644

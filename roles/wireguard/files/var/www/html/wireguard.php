@@ -1,48 +1,43 @@
 <?php
 
-//todo: rewrite this script
+function execute_command($command, &$o) {
+    exec($command, $o);
+}
 
 if (isset($_POST['pubkey'])) {
-        $pubkey=htmlentities($_POST['pubkey']);
+    $pubkey = htmlentities($_POST['pubkey']);
 
-	// check if pubkey is valid base64
-        if (!preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $pubkey)) {
-            return;
+    // check if pubkey is valid base64
+    if (!preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $pubkey)) {
+        return;
+    }
+
+    // return all used ip's in wireguard
+    execute_command("sudo /usr/bin/wg | grep 'allowed ips' | awk -v FS=' ' '{print $3}' | sed 's/\/32//' | grep '10.3'", $o);
+
+    /**
+     *  range is 10.3.0.0/16
+     *           10.3.1.1-10.3.254.254
+     *  other ip's for backbone like sn connections to each other
+     */
+    for ($octetOne = 1; $octetOne <= 254; $octetOne++) {
+        for ($octetTwo = 1; $octetTwo <= 254; $octetTwo++) {
+            $ip = '10.3.' . $octetOne . '.' . $octetTwo;
+            if (in_array($ip, $o) == false) {
+                break 2;
+            }
         }
+    }
 
-        // search for free ip
-        // Alle bereits vergegebenen IP-Adressen aus Wireguard auslesen
-        exec("sudo /usr/bin/wg | grep 'allowed ips' | awk -v FS=' ' '{print $3}' | sed 's/\/32//'", $o);
+    $interfaceGretap = 'gre-' . $octetOne . $octetTwo;
+    $interfaceWireguardNodes = 'wg-nodes';
 
-        $found = false;
-        // IP Range ist 10.3.0.0/16
-        // Die Range geht von 10.3.1.1-10.3.254.254
-        // Die vorherigen IPs sind für Backbonegeschichten (z.B. Verbindungen der Supernodes untereinander)
-        // 1. Oktet durchlaufen
-        for ($oktet1=1; $oktet1<=254; $oktet1++)
-        {
-                //und 2. Oktet
-                for ($oktet2=1; $oktet2<=254; $oktet2++)
-                {
-                        $IP="10.3.".$oktet1.".".$oktet2;
-                        //Wenn zusammengesetzte IP-Adresse NICHT in der Ausgabe von Wireguard erschienen ist
-                        if (in_array($IP, $o) == false) {
-                                $found = true;
-				break;
-			}
-                }
-		if ($found === true) {
-                    break;
-		}
-        }
+    execute_command("sudo /sbin/ip link delete $interfaceGretap", $o);
+    execute_command("sudo /usr/bin/wg set $interfaceWireguardNodes peer {$pubkey} remove", $o);
+    execute_command("sudo /usr/bin/wg set $interfaceWireguardNodes peer {$pubkey} allowed-ips {$ip}/32", $o);
+    execute_command("sudo /sbin/ip link add $interfaceGretap type gretap remote {$ip} local 10.3.0.2", $o);
+    execute_command("sudo /sbin/ip link set up dev $interfaceGretap", $o);
+    execute_command("sudo /sbin/brctl addif br-wg-nodes $interfaceGretap", $o);
 
-        $interface=$oktet1.$oktet2;
-        exec("sudo /sbin/ip link delete gre-{$interface}", $o);
-        exec("sudo /usr/bin/wg set wg0 peer {$pubkey} remove", $o);
-        exec("sudo /usr/bin/wg set wg0 peer {$pubkey} allowed-ips {$IP}/32", $o);
-        exec("sudo /sbin/ip link add gre-{$interface} type gretap remote {$IP} local 10.3.0.2", $o);
-        exec("sudo /sbin/ip link set up dev gre-{$interface}", $o);
-        exec("sudo /sbin/brctl addif wireguard gre-{$interface}", $o);
-
-        echo $IP;
+    echo $ip;
 }
