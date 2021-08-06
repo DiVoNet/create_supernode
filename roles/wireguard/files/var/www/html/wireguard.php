@@ -1,5 +1,10 @@
 <?php
 
+// prevent loops from internal network
+if (strpos($_SERVER['REMOTE_ADDR'], '10.80.') !== false) {
+    return;
+}
+
 function execute_command($command, &$o) {
     exec($command, $o);
 }
